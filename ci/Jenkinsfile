@@ -1,0 +1,18 @@
+pipeline {
+    agent any
+    stages {
+        stage('Verify SCM changes for Python') {
+            when {
+                when { changeset pattern: '*/*.py', caseSensitive: false }
+                steps {
+                    echo 'Building Python'
+                }
+            }
+            stage('Build') {
+                steps {
+                    echo 'Hello World'
+                }
+            }
+        }
+    }
+}
