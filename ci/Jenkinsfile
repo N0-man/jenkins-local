@@ -5,7 +5,7 @@ pipeline {
         stage('Verify SCM changes for Python') {
             when {
                 expression {   // ...check if chages are not in python
-                    sh(returnStatus: true, script: 'git diff origin/main --name-only | grep -c "^python/.*"') == 0
+                    sh(returnStdout: true, script: 'git diff origin/main --name-only | grep -c "^python/.*"') == '0'
                 }
             }
             steps {
