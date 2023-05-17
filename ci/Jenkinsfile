@@ -1,18 +1,29 @@
+/* groovylint-disable LineLength, NestedBlockDepth */
 pipeline {
     agent any
     stages {
         stage('Verify SCM changes for Python') {
             when {
-                when { changeset pattern: '*/*.py', caseSensitive: false }
-                steps {
-                    echo 'Building Python'
+                expression {   // ...check if chages are not in python
+                    sh(returnStatus: true, script: 'git diff origin/main --name-only | grep -c "^python/.*"') == 0
                 }
             }
-            stage('Build') {
-                steps {
-                    echo 'Hello World'
+            steps {
+                script {
+                    currentBuild.result = 'ABORTED'
+                    error('Aborting the build.')
                 }
             }
+        }
+        stage('Build Python') {
+            steps {
+                echo 'Building Python'
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Do stuff before you die!!!'
         }
     }
 }

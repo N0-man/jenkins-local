@@ -30,3 +30,15 @@ This may also be found at: /var/jenkins_home/secrets/initialAdminPassword
 2) Expose local jenkins on internet through ngrok tunnel `ngrok http --host-header=localhost 8080`
 3) Setup webhook on your github repo (settings/webhooks). Add the ngrok https url under payload url e.g. `https://dec2-128-106-1-171.ngrok-free.app/github-webhook/`. You can dissable SSL verification
 4) Remember to update the ngrok webhook url everytime you restart the ngrok tunnel
+
+### Debug
+Look at the Jenkins logs and ensure the webhook is being triggered
+```
+docker logs jenkins -f
+```
+This is how a successful trigger looks like
+```
+DefaultPushGHEventSubscriber#onEvent: Received PushEvent for https://github.com/N0-man/jenkins-local from 140.82.115.53 ⇒ https://ff5c-128-106-1-171.ngrok-free.app:8080/github-webhook/
+
+INFO	o.j.p.g.w.s.DefaultPushGHEventSubscriber$1#run: Poked <PipelineName>
+```
