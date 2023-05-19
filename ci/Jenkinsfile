@@ -1,6 +1,9 @@
 /* groovylint-disable LineLength, NestedBlockDepth */
 pipeline {
     agent any
+    environment {
+        SHOULD_SKIP = false
+    }
     stages {
         stage('Verify SCM changes for Python') {
             when {
@@ -10,12 +13,14 @@ pipeline {
             }
             steps {
                 script {
-                    currentBuild.result = 'ABORTED'
-                    error('Aborting the build.')
+                    env.SHOULD_SKIP = true
                 }
             }
         }
         stage('Build Python') {
+            when {
+                expression { env.SHOULD_SKIP == false }
+            }
             steps {
                 echo 'Building Python'
             }
