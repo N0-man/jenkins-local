@@ -2,24 +2,25 @@
 pipeline {
     agent any
     environment {
-        SHOULD_SKIP = false
+        SHOULD_SKIP = 'false'
     }
     stages {
         stage('Verify SCM changes for Python') {
             when {
                 expression {   // ...check if chages are not in python
-                    sh(returnStdout: true, script: 'git diff origin/main --name-only | grep -c "^python/.*"') == '0'
+                    sh(returnStdout: true, returnStatus: true, script: 'git diff origin/main --name-only | grep -c "^python/.*"').trim() == '0'
                 }
             }
             steps {
                 script {
-                    env.SHOULD_SKIP = true
+                    echo 'mutating env variable SHOULD_SKIP'
+                    env.SHOULD_SKIP = 'true'
                 }
             }
         }
         stage('Build Python') {
             when {
-                expression { env.SHOULD_SKIP == false }
+                environment name: 'SHOULD_SKIP', value: 'false'
             }
             steps {
                 echo 'Building Python'
